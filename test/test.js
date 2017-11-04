@@ -16,6 +16,18 @@ describe('`acquit.parse()`', function() {
       ' */\n' +
       'describe(\'Model\', function() {\n' +
       '  /**\n' +
+      '   * Initialization before each cases\n' +
+      '   **/\n' +      
+      '  beforeEach(function() {\n' +
+      '    assert.ok(1);\n' +
+      '  });\n' +
+      '  /**\n' +
+      '   * Cleanup after each cases\n' +
+      '   **/\n' +      
+      '  afterEach(function() {\n' +
+      '    assert.ok(1);\n' +
+      '  });\n' +
+      '  /**\n' +
       '   * Model **should** be able to save stuff\n' +
       '   **/\n' +
       '  it(\'can save\', function() {\n' +
@@ -27,13 +39,23 @@ describe('`acquit.parse()`', function() {
       '});';
 
     var ret = acquit.parse(contents);
-
+    
     // One top-level block: describe('Model')
     assert.equal(1, ret.length);
     assert.equal('describe', ret[0].type);
     assert.equal(1, ret[0].comments.length);
     assert.ok(ret[0].comments[0].indexOf('`Model`') != -1);
 
+    //beforeEach of describe('Model')
+    assert.equal('beforeEach', ret[0].beforeEach.type);
+    assert.equal(1, ret[0].beforeEach.comments.length);
+    assert.ok(ret[0].beforeEach.comments[0].indexOf('Initialization') != -1);
+
+    //afterEach of describe('Model')
+    assert.equal('afterEach', ret[0].afterEach.type);
+    assert.equal(1, ret[0].afterEach.comments.length);
+    assert.ok(ret[0].afterEach.comments[0].indexOf('Cleanup') != -1);
+    
     // Top-level block contains the `it('can save')` block, which contains
     // the code
     assert.equal(2, ret[0].blocks.length);
